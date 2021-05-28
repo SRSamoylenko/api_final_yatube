@@ -1,5 +1,3 @@
-from typing import Optional
-
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -140,8 +138,3 @@ class Follow(models.Model):
     def __str__(self):
         return (f'Автор: {self.following}\n'
                 f'Подписчик: {self.user}\n')
-
-    def save(self, *args, **kwargs) -> Optional:
-        if self.following != self.user:
-            return super().save(*args, **kwargs)
-        return None

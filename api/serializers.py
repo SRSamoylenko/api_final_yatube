@@ -4,7 +4,10 @@ from .models import Comment, Follow, Group, Post
 
 
 class PostSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source='author.username')
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+    )
 
     class Meta:
         fields = ('id', 'text', 'author', 'pub_date')
@@ -12,7 +15,10 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    author = serializers.ReadOnlyField(source='author.username')
+    author = serializers.SlugRelatedField(
+        slug_field='username',
+        read_only=True,
+    )
 
     class Meta:
         fields = ('id', 'author', 'post', 'text', 'created')
@@ -27,13 +33,13 @@ class GroupSerializer(serializers.ModelSerializer):
 
 class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
+        slug_field='username',
         read_only=True,
-        slug_field='username'
     )
     # ReadOnlyField(source='user.username')
     following = serializers.SlugRelatedField(
-        read_only=True,
         slug_field='username',
+        read_only=True,
     )
 
     class Meta:
