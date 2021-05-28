@@ -1,6 +1,6 @@
-from rest_framework import serializers
+from rest_framework import serializers, validators
 
-from .models import Comment, Follow, Group, Post
+from .models import Comment, Follow, Group, Post, User
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -35,13 +35,26 @@ class FollowSerializer(serializers.ModelSerializer):
     user = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True,
+        default=serializers.CurrentUserDefault(),
     )
-    # ReadOnlyField(source='user.username')
     following = serializers.SlugRelatedField(
         slug_field='username',
-        read_only=True,
+        queryset=User.objects.all()
     )
 
     class Meta:
         fields = ('user', 'following')
         model = Follow
+        validators = (
+            validators.UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=('user', 'following')
+            ),
+        )
+
+    def validate(self, data):
+        super().validate(data)
+        request = self.context['request']
+        if request.user == data['following']:
+            raise serializers.ValidationError('Self subscribsions are denied.')
+        return data

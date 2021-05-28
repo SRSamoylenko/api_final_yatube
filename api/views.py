@@ -57,27 +57,7 @@ class FollowViewSet(ListCreateViewSet):
     def get_queryset(self):
         return Follow.objects.filter(following=self.request.user)
 
-    def create(self, request, *args, **kwargs):
-        following_name = self.request.data.get('following', None)
-        exists = Follow.objects.filter(
-            user=self.request.user,
-            following__username=following_name
-        ).exists()
-        if (following_name is None
-                or exists
-                or following_name == self.request.user.username):
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED,
-            headers=headers
-        )
-
     def perform_create(self, serializer):
-        following_name = self.request.data.get('following', None)
+        following_name = self.request.data.get('following', default=None)
         following = get_object_or_404(User, username=following_name)
-        serializer.save(user=self.request.user, following=following)
+        serializer.save(following=following, user=self.request.user)
