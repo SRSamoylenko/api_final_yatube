@@ -7,8 +7,8 @@ python3, Django Rest Framework, sqlite, simpleJWT, Django-filter
 1. Проверьте установлен ли интерпретатор Python.
 2. Клонируйте репозиторий и перейдите в папку проекта, для этого в консоли наберите:
     ```
-    git clone https://github.com/SRSamoylenko/hw05_final
-    cd hw05_final
+    git clone https://github.com/SRSamoylenko/api_final_yatube
+    cd api_final_yatube
     ```
 3. Создайте и активируйте виртуальное окружение:
     ```
